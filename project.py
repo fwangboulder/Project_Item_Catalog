@@ -79,7 +79,6 @@ def deleteUniversity(university_id):
 @app.route('/university/<int:university_id>/')
 @app.route('/university/<int:university_id>/graduate/')
 def showGraduate(university_id):
-
     university=session.query(University).filter_by(id=university_id).one()
     graduates=session.query(Graduate).filter_by(university_id=university_id).all()
     return render_template('graduates.html',graduates=graduates,university=university)
@@ -89,17 +88,55 @@ def showGraduate(university_id):
 #add new graduate
 @app.route('/university/<int:university_id>/graduate/new/', methods=['GET', 'POST'])
 def newGraduate(university_id):
-    return "Route 6: This page will be for add a new graduate in university %s!" %university_id
+    if request.method=='POST':
+        graduate=Graduate(
+            name=request.form['name'],
+            company=request.form['company'],
+            email=request.form['email'],
+            major=request.form['major'],
+            graduate_year=request.form['graduate_year'],
+            university_id=university_id)
+        session.add(graduate)
+        session.commit()
+        return redirect(url_for("showGraduate",university_id=university_id))
+    else:
+        return render_template('newGraduate.html',university_id=university_id)
+
+    #return "Route 6: This page will be for add a new graduate in university %s!" %university_id
 
 #edit a graduate
 @app.route('/university/<int:university_id>/graduate/<int:graduate_id>/edit/', methods=['GET', 'POST'])
 def editGraduate(university_id, graduate_id):
-    return "Route 7: This page will be for editting  a graduate %s in university %s!" % (graduate_id,university_id)
+    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
+    if request.method=='POST':
+        if request.form['name']:
+            graduate.name=request.form['name']
+        if request.form['company']:
+            graduate.company=request.form['company']
+        if request.form['email']:
+            graduate.email=request.form['email']
+        if request.form['major']:
+            graduate.major=request.form['major']
+        if request.form['graduate_year']:
+            graduate.graduate_year=request.form['graduate_year']
+        session.add(graduate)
+        session.commit()
+        return redirect(url_for('showGraduate',university_id=university_id))
+    else:
+        return render_template('editGraduate.html',university_id=university_id,graduate_id=graduate_id,graduate=graduate)
+    #return "Route 7: This page will be for editting  a graduate %s in university %s!" % (graduate_id,university_id)
 
 #delete a graduate
 @app.route('/university/<int:university_id>/graduate/<int:graduate_id>/delete/', methods=['GET', 'POST'])
 def deleteGraduate(university_id, graduate_id):
-    return "Route 8: This page will be for deleting a graduate %s in university %s!" % (graduate_id,university_id)
+    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
+    if request.method=='POST':
+        session.delete(graduate)
+        session.commit()
+        return redirect(url_for('showGraduate',university_id=university_id))
+    else:
+        return render_template('deleteGraduate.html',graduate=graduate)
+    #return "Route 8: This page will be for deleting a graduate %s in university %s!" % (graduate_id,university_id)
 
 
 
