@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template,request,redirect,jsonify,url_for
 # code for SQLAlchemy and database engine in sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -25,28 +25,66 @@ def graduateJSON(university_id,graduate_id):
 @app.route('/')
 @app.route('/university/')
 def showUniversity():
-    return "Route 1: This page will show all my university in databases!"
+    universities=session.query(University).all()
+    return render_template('universities.html',universities=universities)
+    #return "Route 1: This page will show all my university in databases!"
 
 #create new university
 @app.route('/university/new/', methods=['GET', 'POST'])
 def newUniversity():
-    return "Route 2: This page will be for creating new university!"
+
+    if request.method=='POST':
+        if request.form['name']:
+            university=University(name=request.form['name'])
+            session.add(university)
+            session.commit()
+        return redirect(url_for('showUniversity'))
+    else:
+        return render_template('newUniversity.html')
+    #return "Route 2: This page will be for creating new university!"
 
 #edit a university
 @app.route('/university/<int:university_id>/edit/', methods=['GET', 'POST'])
 def editUniversity(university_id):
-    return "Route 3: This page will be for editting a university %s!" %university_id
+    university=session.query(University).filter_by(id=university_id).one()
+    print request.method
+    if request.method == 'POST':
+        if request.form['name']:
+            university.name = request.form['name']
+        session.add(university)
+        session.commit()
+        return redirect(url_for('showUniversity'))
+    else:
+        return render_template(
+            'editUniversity.html',
+            university=university)
+    #return "Route 3: This page will be for editting a university %s!" %university_id
 
 #delete a university
 @app.route('/university/<int:university_id>/delete/', methods=['GET', 'POST'])
 def deleteUniversity(university_id):
+
+    university=session.query(University).filter_by(id=university_id).one()
+    if request.method=='POST':
+        session.delete(university)
+        session.commit()
+        return redirect(url_for('showUniversity'))
+    else:
+        return render_template('deleteUniversity.html',university=university)
+
+
     return "Route 4: This page will be for deleting a university %s!" %university_id
 
 #show graduates in a university
 @app.route('/university/<int:university_id>/')
 @app.route('/university/<int:university_id>/graduate/')
 def showGraduate(university_id):
-    return "Route 5: This page will show graduates in  university %s!" %university_id
+
+    university=session.query(University).filter_by(id=university_id).one()
+    graduates=session.query(Graduate).filter_by(university_id=university_id).all()
+    return render_template('graduates.html',graduates=graduates,university=university)
+
+    #return "Route 5: This page will show graduates in  university %s!" %university_id
 
 #add new graduate
 @app.route('/university/<int:university_id>/graduate/new/', methods=['GET', 'POST'])

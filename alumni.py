@@ -31,6 +31,7 @@ graduate1 = Graduate(
     major="Computer Science",
     company="Google",
     graduate_year="2010",
+    email='davidxu@gmail.com',
     university=university1)
 
 session.add(graduate1)
@@ -42,6 +43,7 @@ graduate2 = Graduate(
     major="Chemistry",
     company="Facebook",
     graduate_year="2008",
+    email='timwang@gmail.com',
     university=university1)
 
 session.add(graduate2)
@@ -52,6 +54,7 @@ graduate3 = Graduate(
     major="Physics",
     company="LinkedIn",
     graduate_year="2003",
+    email='willzhao@gmail.com',
     university=university1)
 
 session.add(graduate3)
@@ -62,6 +65,7 @@ graduate4 = Graduate(
     major="Physics",
     company="Amazon",
     graduate_year="2001",
+    email='willqian@gmail.com',
     university=university1)
 
 session.add(graduate4)
@@ -72,7 +76,9 @@ graduate5 = Graduate(
     major="Computer Science",
     company="Huawei",
     graduate_year="1998",
+    email='willsun@gmail.com',
     university=university1)
+
 
 session.add(graduate5)
 session.commit()
@@ -88,6 +94,7 @@ graduate1 = Graduate(
     major="Computer Science",
     company="Google",
     graduate_year="2010",
+    email='david.xu@gmail.com',
     university=university1)
 
 session.add(graduate1)
@@ -99,6 +106,7 @@ graduate2 = Graduate(
     major="Chemistry",
     company="Facebook",
     graduate_year="2008",
+    email='tim.wang@gmail.com',
     university=university1)
 
 session.add(graduate2)
@@ -109,6 +117,7 @@ graduate3 = Graduate(
     major="Physics",
     company="LinkedIn",
     graduate_year="2003",
+    email='will.zhao@gmail.com',
     university=university1)
 
 session.add(graduate3)
@@ -119,6 +128,7 @@ graduate4 = Graduate(
     major="Physics",
     company="Amazon",
     graduate_year="2001",
+    email='will.qian@gmail.com',
     university=university1)
 
 session.add(graduate4)
@@ -129,6 +139,7 @@ graduate5 = Graduate(
     major="Computer Science",
     company="Huawei",
     graduate_year="1998",
+    email='will.sun@gmail.com',
     university=university1)
 
 session.add(graduate5)

@@ -62,6 +62,7 @@ class Graduate(Base):
     id = Column(Integer, primary_key=True)
     major = Column(String(250))
     company = Column(String(250))
+    email = Column(String(250))
     graduate_year = Column(String(8))
     university_id = Column(Integer, ForeignKey('university.id'))
     university = relationship(University)
