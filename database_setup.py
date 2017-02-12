@@ -50,6 +50,14 @@ class University(Base):
     name = Column(String(250), nullable=False)
 
     id = Column(Integer, primary_key=True)
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'id': self.id,
+        }
+
     print __tablename__
 
 
@@ -76,9 +84,10 @@ class Graduate(Base):
         return {
             'name': self.name,
             'company': self.company,
+            'email': self.email,
             'id': self.id,
             'major': self.major,
-            'graduation_year': self.graduation_year,
+            'graduation_year': self.graduate_year,
         }
 
 

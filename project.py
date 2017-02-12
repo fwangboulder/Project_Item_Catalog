@@ -14,11 +14,24 @@ session = DBSession()
 
 @app.route('/university/<int:university_id>/graduate/JSON/')
 def graduatesJSON(university_id):
-    return 'Route 9: This is the JSON format information of all graduates in university %s!' %university_id
+    university=session.query(University).filter_by(id=university_id).one()
+    graduates=session.query(Graduate).filter_by(university_id=university_id).all()
+    return jsonify(graduates=[i.serialize for i in graduates])
+
+    #return 'Route 9: This is the JSON format information of all graduates in university %s!' %university_id
 
 @app.route('/university/<int:university_id>/graduate/<int:graduate_id>/JSON/')
 def graduateJSON(university_id,graduate_id):
-    return 'Route 10: This is the JSON format information of one graduate %s in university %s!' %(graduate_id, university_id)
+    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
+    return jsonify(graduate=graduate.serialize)
+
+    #return 'Route 10: This is the JSON format information of one graduate %s in university %s!' %(graduate_id, university_id)
+@app.route('/university/JSON/')
+def universityJSON():
+    universities=session.query(University).all()
+    return jsonify(universities=[i.serialize for i in universities])
+
+    #return 'Route 11: This is the JSON format information all universities!'
 
 
 #show all universities
