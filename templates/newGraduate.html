@@ -1,0 +1,29 @@
+<html>
+
+<body>
+
+<h1>New Graduate</h1>
+
+<form action="{{url_for('newGraduate',university_id=university_id)}}" method = 'post'>
+
+	<p>Name:</p>
+		<input type ='text' size='30' name='name'>
+  <p>Company:</p>
+  	<input type ='text' size='30' name='company'>
+	<p>Email:</p>
+		<input type ='text' size='30' name='email'>
+	<p>Major:</p>
+		<input type ='text' size='30' name='major'>
+  <p>Graduated year:</p>
+  	<input type ='text' size='30' name='graduate_year'>
+
+  	</br>
+
+
+<input type='submit' value='Create'>
+
+</form>
+<a href='{{url_for('showGraduate',university_id=university_id)}}'>Cancel</a>
+
+</body>
+</html>

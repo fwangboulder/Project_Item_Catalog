@@ -1,0 +1,139 @@
+<html>
+
+
+	<body>
+		<div class = 'pane'>
+		<h1>{{ university.name }}</h1>
+
+		{% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+  </br></br>
+	<a href = "{{url_for('showUniversity')}}">Back to Universities Lists</a>
+  </br></br>
+    {% if graduates !=[] %}
+
+		<a href = "{{url_for('newGraduate', university_id = university.id )}}">Create New Graduate Profile</a>
+
+  </br></br>
+
+  <h2>Google</h2>
+
+  {% for i in graduates %}
+  {% if i.company == 'Google' %}
+
+  <p>Name: {{i.name}}</p>
+
+  <p>Email: {{i.email}}</p>
+
+
+  <p>Major: {{i.major}}</p>
+
+
+  <p>Graduated Year: {{i.graduate_year}}</p>
+
+  <a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+  </br>
+  <a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+  </br>
+  </br>
+      {% endif %}
+
+  {% endfor %}
+
+
+		</br></br>
+
+	<h2>Facebook</h2>
+
+		{% for i in graduates %}
+		{% if i.company == 'Facebook' %}
+
+    <p>Name: {{i.name}}</p>
+
+    <p>Email: {{i.email}}</p>
+
+
+    <p>Major: {{i.major}}</p>
+
+
+    <p>Graduated Year: {{i.graduate_year}}</p>
+
+		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+	</br>
+	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+</br>
+</br>
+        {% endif %}
+
+		{% endfor %}
+
+
+
+		</br></br>
+
+	<h2>LinkedIn</h2>
+
+  {% for i in graduates %}
+  {% if i.company == 'LinkedIn' %}
+
+  <p>Name: {{i.name}}</p>
+
+  <p>Email: {{i.email}}</p>
+  <p>Major: {{i.major}}</p>
+
+
+  <p>Graduated Year: {{i.graduate_year}}</p>
+
+		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+  </br>
+	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+</br>
+</br>
+		{% endif %}
+
+		{% endfor %}
+
+
+
+		</br></br>
+
+	<h2>Amazon</h2>
+
+		{% for i in graduates %}
+		{% if i.company == 'Amazon' %}
+
+		<p>Name: {{i.name}}</p>
+    <p>Email: {{i.email}}</p>
+
+		<p>Major: {{i.major}}</p>
+
+
+		<p>Graduated Year: {{i.graduate_year}}</p>
+
+		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+	</br>
+	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+</br>
+</br>
+{% endif %}
+
+		{% endfor %}
+
+
+
+		{% else %}
+		<p> You currently have no graduate. <p>
+		<a href = "{{url_for('newGraduate', university_id = university.id )}}">Create New Graduate Profile</a>
+			{% endif %}
+</div>
+	</body>
+
+</html>

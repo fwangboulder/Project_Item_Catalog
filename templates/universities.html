@@ -1,0 +1,28 @@
+<html>
+
+<body>
+<div class = 'pane'>
+<h1>Universities</h1>
+
+<a href="{{url_for('newUniversity')}}" > <h4> Create a New University </h4> </a>
+
+{% for university in universities %}
+
+
+
+<a href = "{{url_for('showGraduate', university_id = university.id)}}"> <h3>{{university.name}}</h3></a>
+
+<a href = "{{url_for('editUniversity',university_id = university.id)}}">Edit</a>
+</br>
+
+<a href = "{{url_for('deleteUniversity',university_id = university.id)}}">Delete</a>
+
+
+
+
+{% endfor %}
+
+</div>
+</body>
+
+</html>
