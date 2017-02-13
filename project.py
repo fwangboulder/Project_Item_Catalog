@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,jsonify,url_for
+from flask import Flask, render_template,request,redirect,jsonify,url_for, flash
 # code for SQLAlchemy and database engine in sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -81,6 +81,7 @@ def deleteUniversity(university_id):
     if request.method=='POST':
         session.delete(university)
         session.commit()
+
         return redirect(url_for('showUniversity'))
     else:
         return render_template('deleteUniversity.html',university=university)
@@ -111,6 +112,7 @@ def newGraduate(university_id):
             university_id=university_id)
         session.add(graduate)
         session.commit()
+        flash("new graduate profile created!")
         return redirect(url_for("showGraduate",university_id=university_id))
     else:
         return render_template('newGraduate.html',university_id=university_id)
@@ -134,6 +136,7 @@ def editGraduate(university_id, graduate_id):
             graduate.graduate_year=request.form['graduate_year']
         session.add(graduate)
         session.commit()
+        flash("Graduate profile has been edited!")
         return redirect(url_for('showGraduate',university_id=university_id))
     else:
         return render_template('editGraduate.html',university_id=university_id,graduate_id=graduate_id,graduate=graduate)
@@ -146,6 +149,7 @@ def deleteGraduate(university_id, graduate_id):
     if request.method=='POST':
         session.delete(graduate)
         session.commit()
+        flash("Graduate profile has been deleted!")
         return redirect(url_for('showGraduate',university_id=university_id))
     else:
         return render_template('deleteGraduate.html',graduate=graduate)
@@ -156,5 +160,6 @@ def deleteGraduate(university_id, graduate_id):
 
 
 if __name__ == '__main__':
+    app.secret_key='super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=9000)
