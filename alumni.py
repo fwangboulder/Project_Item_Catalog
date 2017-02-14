@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from database_setup import University, Base, Graduate
 
-engine = create_engine('sqlite:///alumni.db')
+engine = create_engine('sqlite:///alumniwithusers.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
