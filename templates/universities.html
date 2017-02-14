@@ -4,8 +4,18 @@
 
 <div class = 'pane'>
 
-  <h2>University Lists</h2>
-
+  <h1>University Lists</h1>
+  <div class = 'flash'>
+    {%with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+          <li> <strong>{{message}}</strong></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
 <a href="{{url_for('newUniversity')}}" > <h4> Create a New University </h4> </a>
 </div>
 
