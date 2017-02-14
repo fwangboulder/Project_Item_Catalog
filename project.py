@@ -1,40 +1,43 @@
-from flask import Flask, render_template,request,redirect,jsonify,url_for, flash
+#! /usr/bin/env python
+
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 # code for SQLAlchemy and database engine in sessionmaker
-from sqlalchemy import create_engine,asc
+from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, University, Graduate
 ##############################
 #*****************************
-#New Imports for Authentication And Authorization
+# New Imports for Authentication And Authorization
 from flask import session as login_session
-import random, string
+import random
+import string
 
 #*****************************
-#Import for GConnect
-#create a flow object form the clientssecrets JSON file,
-#which stores your client ID, client secret and other OAuth 2.0 praameters
-#if no such module: $ pip install --upgrade oauth2client
+# Import for GConnect
+# create a flow object form the clientssecrets JSON file,
+# which stores your client ID, client secret and other OAuth 2.0 praameters
+# if no such module: $ pip install --upgrade oauth2client
 from oauth2client.client import flow_from_clientsecrets
-#use FlowExchangeError method catch the error trying to exchange an
-#authorization code for an access token.
+# use FlowExchangeError method catch the error trying to exchange an
+# authorization code for an access token.
 
 from oauth2client.client import FlowExchangeError
 import httplib2
-#json module provides an API for converting in memory Python objects
-#to a serialized representation
+# json module provides an API for converting in memory Python objects
+# to a serialized representation
 import json
-#make_response method converts the return value from a function
-#into a real response object that can be sent off to client
+# make_response method converts the return value from a function
+# into a real response object that can be sent off to client
 from flask import make_response
-#requests is an Apache 2.0 licensed HTTP library
+# requests is an Apache 2.0 licensed HTTP library
 import requests
 #**************************************************
 
 app = Flask(__name__)
 
 ###################################
-#Download JSON:https://console.developers.google.com/apis/credentials?project=restaurant-menu-app-158420
-#Rename it to client_secrets.json
+# Download JSON:https://console.developers.google.com/apis/credentials?project=restaurant-menu-app-158420
+# Rename it to client_secrets.json
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "alumni app"
@@ -46,18 +49,22 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-#Create a state token to prevent request foregery
-#Store it in the session for later validation
+# Create a state token to prevent request foregery
+# Store it in the session for later validation
+
+
 @app.route('/login')
 def showLogin():
-    state=''.join(random.choice(string.ascii_uppercase+string.digits) \
-    for i in xrange(32))
-    login_session['state']=state
-    #return 'The current session state is %s' %login_session['state']
-    #after create the login.html in templates, now render it
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for i in xrange(32))
+    login_session['state'] = state
+    # return 'The current session state is %s' %login_session['state']
+    # after create the login.html in templates, now render it
     return render_template('login.html', STATE=state)
 
 #################################
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -111,8 +118,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -137,7 +144,8 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ''' "style = "width: 300px; height: 300px;border-radius: 
+    150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '''
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -179,47 +187,51 @@ def gconnect():
 #
 ####################################
 ##################################
-#Disconnect- revoke a current user's token and reset the login_session
+# Disconnect- revoke a current user's token and reset the login_session
 @app.route('/gdisconnect')
 def gdisconnect():
-    #only disconnect a connected user.
-    credentials= login_session.get('credentials')
+    # only disconnect a connected user.
+    credentials = login_session.get('credentials')
     if credentials is None:
-        response=make_response(json.dumps('Current user not connected.'),401)
-        response.headers['Content-Type']='application/json'
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
         return response
-    #Execute HTTP GET request to revoke current token.
+    # Execute HTTP GET request to revoke current token.
     #access_token = login_session['access_token']
-    access_token=credentials.access_token
-    #print 'In gdisconnect access token is %s', access_token
-    #print 'User name is: '
-    #print login_session['username']
-    #if access_token is None:
-        #print 'Access Token is None'
-    	#response = make_response(json.dumps('Current user not connected.'), 401)
-    	#response.headers['Content-Type'] = 'application/json'
-    	#return response
+    access_token = credentials.access_token
+    # print 'In gdisconnect access token is %s', access_token
+    # print 'User name is: '
+    # print login_session['username']
+    # if access_token is None:
+    # print 'Access Token is None'
+    #response = make_response(json.dumps('Current user not connected.'), 401)
+    #response.headers['Content-Type'] = 'application/json'
+    # return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    #print 'result is '
-    #print result
+    # print 'result is '
+    # print result
     if result['status'] == '200':
-        #reset the user's session
+        # reset the user's session
         #del login_session['access_token']
         del login_session['credentials']
-    	del login_session['gplus_id']
-    	del login_session['username']
-    	del login_session['email']
-    	del login_session['picture']
-    	response = make_response(json.dumps('Successfully disconnected.'), 200)
-    	response.headers['Content-Type'] = 'application/json'
-    	return response
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
     else:
-        #For whatever reason, the given token was invalid
-    	response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-    	response.headers['Content-Type'] = 'application/json'
-    	return response
+        # For whatever reason, the given token was invalid
+        response = make_response(
+            json.dumps(
+                'Failed to revoke token for given user.',
+                400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 
 ###################################
@@ -238,52 +250,62 @@ def gdisconnect():
 
 @app.route('/university/<int:university_id>/graduate/JSON/')
 def graduatesJSON(university_id):
-    university=session.query(University).filter_by(id=university_id).one()
-    graduates=session.query(Graduate).filter_by(university_id=university_id).all()
+    university = session.query(University).filter_by(id=university_id).one()
+    graduates = session.query(Graduate).filter_by(
+        university_id=university_id).all()
     return jsonify(graduates=[i.serialize for i in graduates])
 
-    #return 'Route 9: This is the JSON format information of all graduates in university %s!' %university_id
+    # return 'Route 9: This is the JSON format information of all graduates in
+    # university %s!' %university_id
+
 
 @app.route('/university/<int:university_id>/graduate/<int:graduate_id>/JSON/')
-def graduateJSON(university_id,graduate_id):
-    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
+def graduateJSON(university_id, graduate_id):
+    graduate = session.query(Graduate).filter_by(id=graduate_id).one()
     return jsonify(graduate=graduate.serialize)
 
-    #return 'Route 10: This is the JSON format information of one graduate %s in university %s!' %(graduate_id, university_id)
+    # return 'Route 10: This is the JSON format information of one graduate %s
+    # in university %s!' %(graduate_id, university_id)
+
+
 @app.route('/university/JSON/')
 def universityJSON():
-    universities=session.query(University).all()
+    universities = session.query(University).all()
     return jsonify(universities=[i.serialize for i in universities])
 
-    #return 'Route 11: This is the JSON format information all universities!'
+    # return 'Route 11: This is the JSON format information all universities!'
 
 
-#show all universities
+# show all universities
 @app.route('/')
 @app.route('/university/')
 def showUniversity():
-    universities=session.query(University).all()
-    return render_template('universities.html',universities=universities)
-    #return "Route 1: This page will show all my university in databases!"
+    universities = session.query(University).all()
+    return render_template('universities.html', universities=universities)
+    # return "Route 1: This page will show all my university in databases!"
 
-#create new university
+# create new university
+
+
 @app.route('/university/new/', methods=['GET', 'POST'])
 def newUniversity():
 
-    if request.method=='POST':
+    if request.method == 'POST':
         if request.form['name']:
-            university=University(name=request.form['name'])
+            university = University(name=request.form['name'])
             session.add(university)
             session.commit()
         return redirect(url_for('showUniversity'))
     else:
         return render_template('newUniversity.html')
-    #return "Route 2: This page will be for creating new university!"
+    # return "Route 2: This page will be for creating new university!"
 
-#edit a university
+# edit a university
+
+
 @app.route('/university/<int:university_id>/edit/', methods=['GET', 'POST'])
 def editUniversity(university_id):
-    university=session.query(University).filter_by(id=university_id).one()
+    university = session.query(University).filter_by(id=university_id).one()
     print request.method
     if request.method == 'POST':
         if request.form['name']:
@@ -295,39 +317,55 @@ def editUniversity(university_id):
         return render_template(
             'editUniversity.html',
             university=university)
-    #return "Route 3: This page will be for editting a university %s!" %university_id
+    # return "Route 3: This page will be for editting a university %s!"
+    # %university_id
 
-#delete a university
+# delete a university
+
+
 @app.route('/university/<int:university_id>/delete/', methods=['GET', 'POST'])
 def deleteUniversity(university_id):
 
-    university=session.query(University).filter_by(id=university_id).one()
-    if request.method=='POST':
+    university = session.query(University).filter_by(id=university_id).one()
+    if request.method == 'POST':
         session.delete(university)
         session.commit()
 
         return redirect(url_for('showUniversity'))
     else:
-        return render_template('deleteUniversity.html',university=university)
+        return render_template('deleteUniversity.html', university=university)
+
+    # return "Route 4: This page will be for deleting a university %s!"
+    # %university_id
+
+# show graduates in a university
 
 
-    #return "Route 4: This page will be for deleting a university %s!" %university_id
-
-#show graduates in a university
 @app.route('/university/<int:university_id>/')
 @app.route('/university/<int:university_id>/graduate/')
 def showGraduate(university_id):
-    university=session.query(University).filter_by(id=university_id).one()
-    graduates=session.query(Graduate).filter_by(university_id=university_id).all()
-    return render_template('graduates.html',graduates=graduates,university=university)
+    university = session.query(University).filter_by(id=university_id).one()
+    graduates = session.query(Graduate).filter_by(
+        university_id=university_id).all()
+    return render_template(
+        'graduates.html',
+        graduates=graduates,
+        university=university)
 
-    #return "Route 5: This page will show graduates in  university %s!" %university_id
+    # return "Route 5: This page will show graduates in  university %s!"
+    # %university_id
 
-#add new graduate
-@app.route('/university/<int:university_id>/graduate/new/', methods=['GET', 'POST'])
+# add new graduate
+
+
+@app.route(
+    '/university/<int:university_id>/graduate/new/',
+    methods=[
+        'GET',
+        'POST'])
 def newGraduate(university_id):
-    if request.method=='POST':
-        graduate=Graduate(
+    if request.method == 'POST':
+        graduate = Graduate(
             name=request.form['name'],
             company=request.form['company'],
             email=request.form['email'],
@@ -337,53 +375,68 @@ def newGraduate(university_id):
         session.add(graduate)
         session.commit()
         flash("new graduate profile created!")
-        return redirect(url_for("showGraduate",university_id=university_id))
+        return redirect(url_for("showGraduate", university_id=university_id))
     else:
-        return render_template('newGraduate.html',university_id=university_id)
+        return render_template('newGraduate.html', university_id=university_id)
 
-    #return "Route 6: This page will be for add a new graduate in university %s!" %university_id
+    # return "Route 6: This page will be for add a new graduate in university
+    # %s!" %university_id
 
-#edit a graduate
-@app.route('/university/<int:university_id>/graduate/<int:graduate_id>/edit/', methods=['GET', 'POST'])
+# edit a graduate
+
+
+@app.route(
+    '/university/<int:university_id>/graduate/<int:graduate_id>/edit/',
+    methods=[
+        'GET',
+        'POST'])
 def editGraduate(university_id, graduate_id):
-    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
-    if request.method=='POST':
+    graduate = session.query(Graduate).filter_by(id=graduate_id).one()
+    if request.method == 'POST':
         if request.form['name']:
-            graduate.name=request.form['name']
+            graduate.name = request.form['name']
         if request.form['company']:
-            graduate.company=request.form['company']
+            graduate.company = request.form['company']
         if request.form['email']:
-            graduate.email=request.form['email']
+            graduate.email = request.form['email']
         if request.form['major']:
-            graduate.major=request.form['major']
+            graduate.major = request.form['major']
         if request.form['graduate_year']:
-            graduate.graduate_year=request.form['graduate_year']
+            graduate.graduate_year = request.form['graduate_year']
         session.add(graduate)
         session.commit()
         flash("Graduate profile has been edited!")
-        return redirect(url_for('showGraduate',university_id=university_id))
+        return redirect(url_for('showGraduate', university_id=university_id))
     else:
-        return render_template('editGraduate.html',university_id=university_id,graduate_id=graduate_id,graduate=graduate)
-    #return "Route 7: This page will be for editting  a graduate %s in university %s!" % (graduate_id,university_id)
+        return render_template(
+            'editGraduate.html',
+            university_id=university_id,
+            graduate_id=graduate_id,
+            graduate=graduate)
+    # return "Route 7: This page will be for editting  a graduate %s in
+    # university %s!" % (graduate_id,university_id)
 
-#delete a graduate
-@app.route('/university/<int:university_id>/graduate/<int:graduate_id>/delete/', methods=['GET', 'POST'])
+# delete a graduate
+
+
+@app.route(
+    '/university/<int:university_id>/graduate/<int:graduate_id>/delete/',
+    methods=[
+        'GET',
+        'POST'])
 def deleteGraduate(university_id, graduate_id):
-    graduate=session.query(Graduate).filter_by(id=graduate_id).one()
-    if request.method=='POST':
+    graduate = session.query(Graduate).filter_by(id=graduate_id).one()
+    if request.method == 'POST':
         session.delete(graduate)
         session.commit()
         flash("Graduate profile has been deleted!")
-        return redirect(url_for('showGraduate',university_id=university_id))
+        return redirect(url_for('showGraduate', university_id=university_id))
     else:
-        return render_template('deleteGraduate.html',graduate=graduate)
-    #return "Route 8: This page will be for deleting a graduate %s in university %s!" % (graduate_id,university_id)
-
-
-
-
+        return render_template('deleteGraduate.html', graduate=graduate)
+    # return "Route 8: This page will be for deleting a graduate %s in
+    # university %s!" % (graduate_id,university_id)
 
 if __name__ == '__main__':
-    app.secret_key='super_secret_key'
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=9000)
