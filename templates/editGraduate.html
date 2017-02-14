@@ -1,6 +1,7 @@
-<html>
+{% extends "base.html" %}
 
-<body><h1> Edit Graduate </h1>
+{% block content %}
+  <h1> Edit Graduate </h1>
 
 <form action="{{url_for('editGraduate', university_id=university_id,graduate_id=graduate_id)}}" method = 'post'>
 
@@ -27,5 +28,4 @@
 
 
 </form>
-</body>
-</html>
+{% endblock %}

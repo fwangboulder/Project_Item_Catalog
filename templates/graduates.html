@@ -1,7 +1,6 @@
-<html>
+{% extends "base.html" %}
 
-
-	<body>
+{% block content %}
 		<div class = 'pane'>
 		<h1>{{ university.name }}</h1>
 
@@ -24,8 +23,12 @@
 
   </br></br>
 
+  <div class='container'>
+    <div class="panel panel-success">
+      <div class='panel-heading'>
   <h2>Google</h2>
-
+  </div>
+<div class="panel-body">
   {% for i in graduates %}
   {% if i.company == 'Google' %}
 
@@ -44,14 +47,19 @@
   <a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
   </br>
   </br>
+
       {% endif %}
 
   {% endfor %}
 
-
+</div>
+</div>
 		</br></br>
-
+    <div class="panel panel-success">
+      <div class='panel-heading'>
 	<h2>Facebook</h2>
+</div>
+<div class="panel-body">
 
 		{% for i in graduates %}
 		{% if i.company == 'Facebook' %}
@@ -75,11 +83,15 @@
 
 		{% endfor %}
 
-
+</div>
+</div>
 
 		</br></br>
-
+    <div class="panel panel-success">
+      <div class='panel-heading'>
 	<h2>LinkedIn</h2>
+</div>
+<div class='panel-body'>
 
   {% for i in graduates %}
   {% if i.company == 'LinkedIn' %}
@@ -101,11 +113,15 @@
 
 		{% endfor %}
 
-
+</div>
+</div>
 
 		</br></br>
-
+    <div class="panel panel-success">
+      <div class='panel-heading'>
 	<h2>Amazon</h2>
+</div>
+<div class='panel-body'>
 
 		{% for i in graduates %}
 		{% if i.company == 'Amazon' %}
@@ -127,13 +143,13 @@
 
 		{% endfor %}
 
-
+</div>
+</div>
 
 		{% else %}
 		<p> You currently have no graduate. <p>
 		<a href = "{{url_for('newGraduate', university_id = university.id )}}">Create New Graduate Profile</a>
 			{% endif %}
-</div>
-	</body>
+    </div>
 
-</html>
+{% endblock %}

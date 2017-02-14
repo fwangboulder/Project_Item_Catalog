@@ -1,6 +1,6 @@
-<html>
+{% extends "base.html" %}
 
-<body>
+{% block content %}
 
 <h1>New University</h1>
 
@@ -15,5 +15,4 @@
 
 </form>
 <a href='{{url_for('showUniversity')}}'> Cancel </a>
-</body>
-</html>
+{% endblock %}

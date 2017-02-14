@@ -1,7 +1,6 @@
-<html>
+{% extends "base.html" %}
 
-
-<body>
+{% block content %}
 <h1> Are you sure you want to delete {{university.name}}? </h1>
 
 <form action="{{ url_for('deleteUniversity',university_id = university.id)}}" method = 'post'>
@@ -11,6 +10,4 @@
 </form>
 
 <a href = '{{url_for('showUniversity')}}'> Cancel </a>
-</body>
-
-</html>
+{% endblock %}

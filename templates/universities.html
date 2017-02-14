@@ -1,28 +1,29 @@
-<html>
+{% extends "base.html" %}
 
-<body>
+{% block content %}
+
 <div class = 'pane'>
-<h1>Universities</h1>
+
+  <h2>University Lists</h2>
 
 <a href="{{url_for('newUniversity')}}" > <h4> Create a New University </h4> </a>
+</div>
 
 {% for university in universities %}
-
-
-
-<a href = "{{url_for('showGraduate', university_id = university.id)}}"> <h3>{{university.name}}</h3></a>
-
+<div class='container'>
+  <div class="panel panel-success">
+    <div class='panel-heading'>
+      <a href = "{{url_for('showGraduate', university_id = university.id)}}"> <h3>{{university.name}}</h3></a>
+    </div>
+    <div class="panel-body">
 <a href = "{{url_for('editUniversity',university_id = university.id)}}">Edit</a>
 </br>
 
 <a href = "{{url_for('deleteUniversity',university_id = university.id)}}">Delete</a>
-
-
-
-
-{% endfor %}
+</div>
+</div>
 
 </div>
-</body>
+{% endfor %}
 
-</html>
+{% endblock %}
