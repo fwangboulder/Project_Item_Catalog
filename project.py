@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 # code for SQLAlchemy and database engine in sessionmaker
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, University, Graduate
+from database_setup import Base, University, Graduate, User
 ##############################
 #*****************************
 # New Imports for Authentication And Authorization
@@ -137,6 +137,11 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+    # check to see if the user_id is in the ;login_session
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
@@ -144,7 +149,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ''' "style = "width: 300px; height: 300px;border-radius: 
+    output += ''' "style = "width: 300px; height: 300px;border-radius:
     150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '''
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
@@ -186,8 +191,34 @@ def gconnect():
 #
 #
 ####################################
+# User Helper Functions
+
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).all()
+    return user[0].id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
 ##################################
 # Disconnect- revoke a current user's token and reset the login_session
+
+
 @app.route('/gdisconnect')
 def gdisconnect():
     # only disconnect a connected user.
@@ -213,14 +244,14 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
     # print 'result is '
     # print result
+    del login_session['credentials']
+    del login_session['gplus_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
     if result['status'] == '200':
         # reset the user's session
         #del login_session['access_token']
-        del login_session['credentials']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -280,8 +311,15 @@ def universityJSON():
 @app.route('/')
 @app.route('/university/')
 def showUniversity():
+
     universities = session.query(University).all()
-    return render_template('universities.html', universities=universities)
+    # check if username is in login_session.
+    if 'username' not in login_session:
+        return render_template(
+            'publicuniversities.html',
+            universities=universities)
+    else:
+        return render_template('universities.html', universities=universities)
     # return "Route 1: This page will show all my university in databases!"
 
 # create new university
@@ -289,10 +327,13 @@ def showUniversity():
 
 @app.route('/university/new/', methods=['GET', 'POST'])
 def newUniversity():
-
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
-            university = University(name=request.form['name'])
+            university = University(
+                name=request.form['name'],
+                user_id=login_session['user_id'])
             session.add(university)
             session.commit()
         return redirect(url_for('showUniversity'))
@@ -305,8 +346,18 @@ def newUniversity():
 
 @app.route('/university/<int:university_id>/edit/', methods=['GET', 'POST'])
 def editUniversity(university_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
-    print request.method
+    if university.user_id != login_session['user_id']:
+        # return """<script> function myFunction()
+        # {alert('Not allowed to edit university created by others');}
+        # </script>
+        # <body onload='myFunction()'>
+        # """
+        flash("You are not allowed to edit university created by others! Please create new university!")
+        return redirect(url_for('showUniversity'))
+
     if request.method == 'POST':
         if request.form['name']:
             university.name = request.form['name']
@@ -325,8 +376,17 @@ def editUniversity(university_id):
 
 @app.route('/university/<int:university_id>/delete/', methods=['GET', 'POST'])
 def deleteUniversity(university_id):
-
+    if 'username' not in login_session:
+        return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
+    if university.user_id != login_session['user_id']:
+        # return """<script> function myFunction()
+        # {alert('Not allowed to delete this university. Please create your own for delete.');}
+        # </script>
+        # <body onload='myFunction()'>
+        # """
+        flash("You are not allowed to delete university created by others! Please create new university!")
+        return redirect(url_for('showUniversity'))
     if request.method == 'POST':
         session.delete(university)
         session.commit()
@@ -347,10 +407,21 @@ def showGraduate(university_id):
     university = session.query(University).filter_by(id=university_id).one()
     graduates = session.query(Graduate).filter_by(
         university_id=university_id).all()
-    return render_template(
-        'graduates.html',
-        graduates=graduates,
-        university=university)
+    # protect each graduate based on whoever create it.
+    creator = getUserInfo(university.user_id)
+    if 'username' not in login_session or creator.id != login_session[
+            'user_id']:
+        return render_template(
+            'publicgraduates.html',
+            graduates=graduates,
+            university=university,
+            creator=creator)
+    else:
+        return render_template(
+            'graduates.html',
+            graduates=graduates,
+            university=university,
+            creator=creator)
 
     # return "Route 5: This page will show graduates in  university %s!"
     # %university_id
@@ -364,6 +435,17 @@ def showGraduate(university_id):
         'GET',
         'POST'])
 def newGraduate(university_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    university = session.query(University).filter_by(id=university_id).one()
+    if university.user_id != login_session['user_id']:
+        # return """<script> function myFunction()
+        # {alert('Not allowed to add graduate to this university. Please create your university for add.');}
+        # </script>
+        # <body onload='myFunction()'>
+        # """
+        flash("You are not allowed to add graduate to university created by others! Please create new university!")
+        return redirect(url_for("showUniversity"))
     if request.method == 'POST':
         graduate = Graduate(
             name=request.form['name'],
@@ -371,7 +453,8 @@ def newGraduate(university_id):
             email=request.form['email'],
             major=request.form['major'],
             graduate_year=request.form['graduate_year'],
-            university_id=university_id)
+            university_id=university_id,
+            user_id=university.user_id)
         session.add(graduate)
         session.commit()
         flash("new graduate profile created!")
@@ -391,7 +474,18 @@ def newGraduate(university_id):
         'GET',
         'POST'])
 def editGraduate(university_id, graduate_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     graduate = session.query(Graduate).filter_by(id=graduate_id).one()
+    university = session.query(University).filter_by(id=university_id).one()
+    # if university.user_id!=login_session['user_id']:
+    #     # return """<script> function myFunction()
+    #     # {alert('Not allowed to edit this graduate. Please create your own for edit.');}
+    #     # </script>
+    #     # <body onload='myFunction()'>
+    #     # """
+    #     flash("You are not allowed to edit graduate created by others!")
+    #     return redirect(url_for("showGraduate", university_id=university_id))
     if request.method == 'POST':
         if request.form['name']:
             graduate.name = request.form['name']
@@ -425,7 +519,18 @@ def editGraduate(university_id, graduate_id):
         'GET',
         'POST'])
 def deleteGraduate(university_id, graduate_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    university = session.query(University).filter_by(id=university_id).one()
     graduate = session.query(Graduate).filter_by(id=graduate_id).one()
+    # if university.user_id!=login_session['user_id']:
+    #     # return """<script> function myFunction()
+    #     # {alert('Not allowed to delete this graduate. Please create your own for edit.');}
+    #     # </script>
+    #     # <body onload='myFunction()'>
+    #     # """
+    #     flash("You are not allowed to delete graduate created by others!")
+    #     return redirect(url_for("showGraduate", university_id=university_id))
     if request.method == 'POST':
         session.delete(graduate)
         session.commit()
