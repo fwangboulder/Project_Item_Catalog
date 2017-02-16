@@ -1,15 +1,32 @@
- h1, h2, h3, h4       { color: blue; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 2px solid #eee; }
-h2              { font-size: 1.2em; }
+/* General */
+h1, h2, h3 {
+  color: blue;
+}
+h1, h2 {
+  font-family: 'Georgia', serif;
+  margin: 0;
+}
+h1 { border-bottom: 2px solid #eee; }
+h2 { font-size: 1.2em; }
+h4 {
+  color: green;
+  text-decoration: underline;
+}
+p { color: red;}
 
-p               { color: red;}
+a {
+  text-decoration: none;
+  color: blue;
+  font-size: 1.5em;
+}
 
-a {text-decoration: none; color:blue; font-size: .75em;}
+.name {
+  width: 50%;
+  display: inline-block;
+  float: left;
+}
 
-
-.header         {left:50%; text-align: center;}
-.name {width:50%;display: inline-block; float: left;}
-
-
-.flash          { background: #cee5F5;}
+.flash {
+  background: #cee5F5;
+  color: red;
+}
