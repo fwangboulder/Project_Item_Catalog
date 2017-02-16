@@ -1,3 +1,14 @@
+##########################################
+# Project 5: Item Catalog
+# Date Started: 01/30/2017
+# Date Completed: 02/16/2017
+# Submitted by: Fang Wang
+##########################################
+
+######################################## Media File ########################
+# Description: This file creates database using object-relational mapping
+#############################################################################
+
 #! /usr/bin/env python
 
 """

@@ -1,3 +1,14 @@
+##########################################
+# Project 5: Item Catalog
+# Date Started: 01/30/2017
+# Date Completed: 02/16/2017
+# Submitted by: Fang Wang
+##########################################
+
+################## Media File ##################################
+# Description: This file provides data in databases.
+#################################################################
+
 #! /usr/bin/env python
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +34,7 @@ session = DBSession()
 user1 = User(
     name="Fang Wang",
     email="fwangboulder@gmail.com",
-    picture='https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png')
+    picture='https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png') # NOQA
 session.add(user1)
 session.commit()
 # Graduates for Stanford University

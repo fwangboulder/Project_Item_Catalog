@@ -1,3 +1,14 @@
+##########################################
+# Project 5: Item Catalog
+# Date Started: 01/30/2017
+# Date Completed: 02/16/2017
+# Submitted by: Fang Wang
+##########################################
+
+########################## Media File ########################
+# Description: This is the main file creating the web app
+##############################################################
+
 #! /usr/bin/env python
 
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
@@ -36,7 +47,6 @@ import requests
 app = Flask(__name__)
 
 ###################################
-# Download JSON:https://console.developers.google.com/apis/credentials?project=restaurant-menu-app-158420
 # Rename it to client_secrets.json
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
@@ -63,6 +73,8 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 #################################
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -256,7 +268,6 @@ def fbconnect():
     # strip expire tag from access token
     token = result.split("&")[0]
 
-
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -268,7 +279,9 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout, let's strip out the information before the equals sign in our token
+    # The token must be stored in the login_session in order to properly
+    # logout, let's strip out the information before the equals sign in our
+    # token
     stored_token = token.split("=")[1]
     login_session['access_token'] = stored_token
 
@@ -304,10 +317,12 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
+        facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
+
 
 @app.route('/disconnect')
 def disconnect():
@@ -329,9 +344,6 @@ def disconnect():
     else:
         flash("You were not logged in to begin with!")
         return redirect(url_for("showUniversity"))
-
-
-
 
 
 ################################
