@@ -6,20 +6,8 @@
 			<h1>{{ university.name }} </h1>
 			<p> Created by {{ creator.name }} </p>
 			<p>email: {{ creator.email }} </p>
-			</br>
-			<div class = 'flash'>
-	    	{%with messages = get_flashed_messages() %}
-	      	{% if messages %}
-	        	<ul>
-	          	{% for message in messages %}
-	          	<li> <strong>{{message}}</strong></li>
-	          	{% endfor %}
-	        	</ul>
-	      	{% endif %}
-	    	{% endwith %}
-	  	</div>
 
-  		</br></br>
+  		</br>
     	{% if graduates !=[] %}
 			<a href = "{{url_for('newGraduate', university_id = university.id )}}"><h4> Add Graduate </h4></a>
 			</br></br>

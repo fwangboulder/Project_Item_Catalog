@@ -13,6 +13,7 @@
 			<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
 		<title>Alumni</title>
 	</head>
+
 	<body>
 		<section class="content">
 			<div class="container">
@@ -25,14 +26,26 @@
 										<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Show All Universities
 									</a>
     						</div>
+
 								<ul class="nav navbar-nav navbar-right">
 									{%if 'username' not in session %}
 									<li class='list_item'><a href="{{url_for('showLogin')}}"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
 									{% else %}
-									<li class='list_item'><a href="{{url_for('gdisconnect')}}"> <span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+									<li class='list_item'><a href="{{url_for('disconnect')}}"> <span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
 									{% endif %}
     						</ul>
   						</div>
+							<div class = 'flash'>
+								{%with messages = get_flashed_messages() %}
+									{% if messages %}
+										<ul>
+											{% for message in messages %}
+											<li> <strong>{{message}}</strong></li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								{% endwith %}
+							</div>
 					</nav>
 					{% block content %}
           {% endblock %}
