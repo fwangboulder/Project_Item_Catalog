@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<!-- show all universities with user -->
 <div class = 'pane'>
 
-  <h1>University Lists</h1>
   <div class = 'flash'>
     {%with messages = get_flashed_messages() %}
       {% if messages %}
@@ -16,7 +15,7 @@
       {% endif %}
     {% endwith %}
   </div>
-<a href="{{url_for('newUniversity')}}" > <h4> Create a New University </h4> </a>
+  <a href="{{url_for('newUniversity')}}" > <h4> Add University </h4> </a>
 </div>
 
 {% for university in universities %}
@@ -26,14 +25,11 @@
       <a href = "{{url_for('showGraduate', university_id = university.id)}}"> <h3>{{university.name}}</h3></a>
     </div>
     <div class="panel-body">
-<a href = "{{url_for('editUniversity',university_id = university.id)}}">Edit</a>
-</br>
-
-<a href = "{{url_for('deleteUniversity',university_id = university.id)}}">Delete</a>
-</div>
-</div>
-
+      <a href = "{{url_for('editUniversity',university_id = university.id)}}">Edit</a>
+      </br>
+      <a href = "{{url_for('deleteUniversity',university_id = university.id)}}">Delete</a>
+    </div>
+  </div>
 </div>
 {% endfor %}
-
 {% endblock %}

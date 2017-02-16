@@ -2,145 +2,140 @@
 
 {% block content %}
 		<div class = 'pane'>
-		<h1>{{ university.name }}</h1>
 
-		
-  </br></br>
-	<a href = "{{url_for('showUniversity')}}">Back to Universities Lists</a>
-  </br></br>
-    {% if graduates !=[] %}
+			<h1>{{ university.name }} </h1>
+			<p> Created by {{ creator.name }} </p>
+			<p>email: {{ creator.email }} </p>
+			</br>
+			<div class = 'flash'>
+	    	{%with messages = get_flashed_messages() %}
+	      	{% if messages %}
+	        	<ul>
+	          	{% for message in messages %}
+	          	<li> <strong>{{message}}</strong></li>
+	          	{% endfor %}
+	        	</ul>
+	      	{% endif %}
+	    	{% endwith %}
+	  	</div>
 
-		<a href = "{{url_for('newGraduate', university_id = university.id )}}">Create New Graduate Profile</a>
+  		</br></br>
+    	{% if graduates !=[] %}
+			<a href = "{{url_for('newGraduate', university_id = university.id )}}"><h4> Add Graduate </h4></a>
+			</br></br>
+  		<div class='container'>
+    		<div class="panel panel-success">
+      		<div class='panel-heading'>
+  					<h2>Google</h2>
+  				</div>
+					<div class="panel-body">
+  					{% for i in graduates %}
+  					{% if i.company == 'Google' %}
+  					<p>Name: {{i.name}}</p>
+  					<p>Email: {{i.email}}</p>
+						<p>Major: {{i.major}}</p>
+  					<p>Graduated Year: {{i.graduate_year}}</p>
+  					<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+  					</br>
+  					<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+  					</br>
+  					</br>
+      			{% endif %}
+  					{% endfor %}
+					</div>
+				</div>
+				</br></br>
+    		<div class="panel panel-success">
+      		<div class='panel-heading'>
+						<h2>Facebook</h2>
+					</div>
+					<div class="panel-body">
+						{% for i in graduates %}
+						{% if i.company == 'Facebook' %}
+    				<p>Name: {{i.name}}</p>
+    				<p>Email: {{i.email}}</p>
+    				<p>Major: {{i.major}}</p>
+    				<p>Graduated Year: {{i.graduate_year}}</p>
+						<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+						</br>
+						<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+						</br>
+						</br>
+  					{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+				</br></br>
+    		<div class="panel panel-success">
+      		<div class='panel-heading'>
+						<h2>LinkedIn</h2>
+					</div>
+					<div class='panel-body'>
+  					{% for i in graduates %}
+  					{% if i.company == 'LinkedIn' %}
+  					<p>Name: {{i.name}}</p>
+  					<p>Email: {{i.email}}</p>
+  					<p>Major: {{i.major}}</p>
+  					<p>Graduated Year: {{i.graduate_year}}</p>
+						<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+  					</br>
+						<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+						</br>
+						</br>
+						{% endif %}
+						{% endfor %}
 
-  </br></br>
+					</div>
+				</div>
+				</br></br>
+    			<div class="panel panel-success">
+      			<div class='panel-heading'>
+								<h2>Amazon</h2>
+						</div>
+						<div class='panel-body'>
+							{% for i in graduates %}
+							{% if i.company == 'Amazon' %}
+							<p>Name: {{i.name}}</p>
+    					<p>Email: {{i.email}}</p>
+							<p>Major: {{i.major}}</p>
+							<p>Graduated Year: {{i.graduate_year}}</p>
+							<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+							</br>
+							<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+							</br>
+							</br>
+							{% endif %}
+							{% endfor %}
+					</div>
+				</div>
+				</br></br>
+				<div class="panel panel-success">
+					<div class='panel-heading'>
+						<h2>Other</h2>
+					</div>
+					<div class="panel-body">
+						{% for i in graduates %}
+						{% if i.company == 'Other' %}
+						<p>Name: {{i.name}}</p>
+						<p>Email: {{i.email}}</p>
+						<p>Major: {{i.major}}</p>
+						<p>Graduated Year: {{i.graduate_year}}</p>
+						<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
+						</br>
+						<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
+						</br>
+						</br>
+						{% endif %}
 
-  <div class='container'>
-    <div class="panel panel-success">
-      <div class='panel-heading'>
-  <h2>Google</h2>
-  </div>
-<div class="panel-body">
-  {% for i in graduates %}
-  {% if i.company == 'Google' %}
+						{% endfor %}
 
-  <p>Name: {{i.name}}</p>
-
-  <p>Email: {{i.email}}</p>
-
-
-  <p>Major: {{i.major}}</p>
-
-
-  <p>Graduated Year: {{i.graduate_year}}</p>
-
-  <a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
-  </br>
-  <a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
-  </br>
-  </br>
-
-      {% endif %}
-
-  {% endfor %}
-
-</div>
-</div>
-		</br></br>
-    <div class="panel panel-success">
-      <div class='panel-heading'>
-	<h2>Facebook</h2>
-</div>
-<div class="panel-body">
-
-		{% for i in graduates %}
-		{% if i.company == 'Facebook' %}
-
-    <p>Name: {{i.name}}</p>
-
-    <p>Email: {{i.email}}</p>
-
-
-    <p>Major: {{i.major}}</p>
-
-
-    <p>Graduated Year: {{i.graduate_year}}</p>
-
-		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
-	</br>
-	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-        {% endif %}
-
-		{% endfor %}
-
-</div>
-</div>
-
-		</br></br>
-    <div class="panel panel-success">
-      <div class='panel-heading'>
-	<h2>LinkedIn</h2>
-</div>
-<div class='panel-body'>
-
-  {% for i in graduates %}
-  {% if i.company == 'LinkedIn' %}
-
-  <p>Name: {{i.name}}</p>
-
-  <p>Email: {{i.email}}</p>
-  <p>Major: {{i.major}}</p>
-
-
-  <p>Graduated Year: {{i.graduate_year}}</p>
-
-		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
-  </br>
-	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-		{% endif %}
-
-		{% endfor %}
-
-</div>
-</div>
-
-		</br></br>
-    <div class="panel panel-success">
-      <div class='panel-heading'>
-	<h2>Amazon</h2>
-</div>
-<div class='panel-body'>
-
-		{% for i in graduates %}
-		{% if i.company == 'Amazon' %}
-
-		<p>Name: {{i.name}}</p>
-    <p>Email: {{i.email}}</p>
-
-		<p>Major: {{i.major}}</p>
-
-
-		<p>Graduated Year: {{i.graduate_year}}</p>
-
-		<a href='{{url_for('editGraduate', university_id = university.id, graduate_id=i.id ) }}' >Edit</a>
-	</br>
-	<a href='{{url_for('deleteGraduate', university_id = university.id, graduate_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-{% endif %}
-
-		{% endfor %}
-
-</div>
-</div>
-
+					</div>
+				</div>
 		{% else %}
-		<p> You currently have no graduate. <p>
-		<a href = "{{url_for('newGraduate', university_id = university.id )}}">Create New Graduate Profile</a>
-			{% endif %}
-    </div>
+			<p> You currently have no graduate. <p>
+			<a href = "{{url_for('newGraduate', university_id = university.id )}}">Add Graduate</a>
+		{% endif %}
+  </div>
+</div>
 
 {% endblock %}

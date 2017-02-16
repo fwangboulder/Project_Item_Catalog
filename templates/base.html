@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-	<!-- <link rel='stylesheet' href='/static/main.css'> -->
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
-	<title>Alumni</title>
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+		<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+			</script>
+			<script src="//apis.google.com/js/platform.js?onload=start"> </script>
+			<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+		<title>Alumni</title>
+	</head>
+	<body>
 		<section class="content">
-
 			<div class="container">
         <ul class="nav nav-pills nav-stacked">
-					<li class="active"><a href='#'><h1>Alumni</h1></a></li>
-					<div class="nav navbar-nav navbar-right">
-					<li class='list_item'><a href="{{url_for('showLogin')}}"><span class="list__item__link"></span> <h5>Google Login</h5></a></li>
-					<li class='list_item'><a href="{{url_for('gdisconnect')}}"><span class="list__item__link"></span> <h5>Google Logout</h5></a></li>
-
-				</div>
+					<li class="active"><a href='#'><h1 class="text-center">Alumni Association</h1></a></li>
+						<nav class="navbar navbar-default">
+  						<div class="container-fluid">
+    						<div class="navbar-header">
+      						<a class="navbar-brand" href="{{url_for('showUniversity')}}">
+										<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Show All Universities
+									</a>
+    						</div>
+								<ul class="nav navbar-nav navbar-right">
+									{%if 'username' not in session %}
+									<li class='list_item'><a href="{{url_for('showLogin')}}"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
+									{% else %}
+									<li class='list_item'><a href="{{url_for('gdisconnect')}}"> <span class="glyphicon glyphicon-log-out"></span> Logout </a></li>
+									{% endif %}
+    						</ul>
+  						</div>
+					</nav>
 					{% block content %}
           {% endblock %}
         </ul>
 			</div>
-
 		</section>
-
-	</div>
-
-</body>
+	</body>
 </html>

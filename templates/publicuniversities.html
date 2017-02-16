@@ -1,53 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-	<div class="row top-menu">
-		<div class="col-md-10"></div>
-		<div class="col-md-2 text-right">
-			<a href="{{url_for('showLogin')}}">Click Here to Log in </a>
-		</div>
-	</div>
-	<div class="row divider blue">
-		<div class="col-md-12"></div>
-	</div>
-	<div class="row banner main">
-		<div class="col-md-1"></div>
-		<div class="col-md-11 padding-none">
-			<h1>University Lists</h1>
-		</div>
-	</div>
-
-	<div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-
-        <ul>
-        {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
-
+<!-- show all universities in public -->
+<div class = 'pane'>
+  <a href="{{url_for('newUniversity')}}" > <h4> Add University </h4> </a>
 </div>
-
-
-
-	<div class="row padding-top padding-bottom">
-		<div class="col-md-1"></div>
-		<div class="col-md-10 padding-none">
-
-		</div>
-		<div class="col-md-1"></div>
-	</div>
-	{% for university in universities %}
-		<a href = "{{url_for('showUniversity')}}">
-			<div class="row">
-				<div class="col-md-1"></div>
-					<div class="col-md-10 university-list">
-						<h3>{{university.name}}</h3>
-					</div>
-				<div class="col-md-1"></div>
-			</div>
-		</a>
-	{% endfor %}
+{% for university in universities %}
+<div class='container'>
+  <div class="panel panel-success">
+    <div class='panel-heading'>
+      <a href = "{{url_for('showGraduate', university_id = university.id)}}"> <h3>{{university.name}}</h3></a>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}

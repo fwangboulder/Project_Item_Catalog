@@ -1,22 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
 
-  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-  </script>
-
-  <script src="//apis.google.com/js/platform.js?onload=start"> </script>
-
-<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
-
-
-</head>
-
-
-<body>
-
-
+{% block content %}
 <!-- GOOGLE PLUS SIGN IN BUTTON
    data-scope: Specify what Good rescources we want to access
    data-clientid: client_id
@@ -30,11 +14,9 @@
    data-approvalprompt: force means user has to login each time visiting the login page.
 
 -->
-
-
-          <div id="signInButton">
-          <span class="g-signin"
-
+  </br></br>
+    <div id="signInButton">
+        <span class="g-signin"
             data-scope="openid email"
             data-clientid="990322975078-mfu44is9hm86u562llicf49tvgurlp72.apps.googleusercontent.com"
             data-redirecturi="postmessage"
@@ -42,14 +24,12 @@
             data-cookiepolicy="single_host_origin"
             data-callback="signInCallback"
             data-approvalprompt="force">
-          </span>
-        </div>
-
-        <div id="result"></div>
-
+        </span>
+    </div>
+    <div id="result"></div>
         <script>
-        function signInCallback(authResult) {
-          if (authResult['code']) {
+          function signInCallback(authResult) {
+            if (authResult['code']) {
             // Hide the sign-in button now that the user is authorized
             $('#signinButton').attr('style', 'display: none');
             // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
@@ -77,10 +57,5 @@
           }); } }
         </script>
 
-
-
 <!--END GOOGLE PLUS SIGN IN BUTTON -->
-
-  </body>
-
-  </html>
+{% endblock %}
