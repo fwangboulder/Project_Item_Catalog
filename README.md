@@ -7,6 +7,11 @@ Develop an application that provides a list of items within a variety of
 categories as well as provide a user registration and authentication system.
 Registered users will have the ability to post, edit and delete their items.
 
+This alumni app provides alumni information for different universities currently
+working in different companies. It will be good to check where graduates go and
+if you need a refer for a job. Easy to find them! You can login with your google
+account or facebook account and add more information if you want.
+
 Key words: Flask, RESTful web application, OAuth authentication, HTTP, Bootstrap,
             Python, CSS, HTML
 
