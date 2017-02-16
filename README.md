@@ -1,21 +1,20 @@
 # Project_Item_Catalog
 Project 5 Udacity Full Stack Developer Nanodegree
 
-**Project Overview**
+#Project Overview
 
 Develop an application that provides a list of items within a variety of
 categories as well as provide a user registration and authentication system.
 Registered users will have the ability to post, edit and delete their items.
 
-Key words: Flask, RESTful web application, OAuth authentication, HTTP, Bootstrap, CSS
+Key words: Flask, RESTful web application, OAuth authentication, HTTP
 
-**Achievement:**
+Achievement:
 
     1. Efficiently interacting with data is the backbone upon which performant web applications are built
 
     2. Properly implementing authentication mechanisms and appropriately mapping HTTP methods to CRUD operations are core features of a properly secured web application
-
-**How to run it?**
+#How to run it?
 
     1. $ git clone https://github.com/fwangboulder/Project_Item_Catalog.git
     2. Go to templates folder. type in your own client ID in login.html file
@@ -23,11 +22,11 @@ Key words: Flask, RESTful web application, OAuth authentication, HTTP, Bootstrap
           Read the last paragraph of this file: https://github.com/fwangboulder/DailyCodePractice/blob/master/framework/AuthenticationAuthorization/README.md
 
     3. Download your ClientID JSON file and rename it as client_secrets.json, store
-        it in the same folder as project.py file.
+        it in the same folder as project.py file (replace mine).
 
     4. $python project.py
 
-    5. http://localhost:9000/login
+    5. http://localhost:9000
 
     6. If you see an error about JSON serializable. update your versions of Flask.
 
@@ -41,4 +40,11 @@ Key words: Flask, RESTful web application, OAuth authentication, HTTP, Bootstrap
       Note: If you get a permissions error, you will need to include sudo at the beginning of each command. That should look like this: sudo pip install flask==0.9
 
       ```
-    7. try to play with app and logout it
+    7. Before you login, you can only view all the university and graduates.
+
+    8. After you login with your google account, you can play with create, edit and delete functions.
+
+    9. Want to view JSON format data?
+        View all universities: http://localhost:9000/university/JSON
+        View all graduates for university #1: http://localhost:9000/university/1/graduate/JSON/
+        View one graduate: http://localhost:9000/university/1/graduate/1/JSON/
