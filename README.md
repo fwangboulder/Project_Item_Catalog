@@ -17,30 +17,23 @@ Achievement:
 #How to run it?
 
     1. $ git clone https://github.com/fwangboulder/Project_Item_Catalog.git
-    2. Go to templates folder. type in your own client ID in login.html file
-          Don't have your client ID and do not know how to get it?
-          Read the last paragraph of this file: https://github.com/fwangboulder/DailyCodePractice/blob/master/framework/AuthenticationAuthorization/README.md
 
-    3. Download your ClientID JSON file and rename it as client_secrets.json, store
-        it in the same folder as project.py file (replace mine).
+    2. $ cd Project_Item_catalog.git
+        make sure you have installed Vagrant and VirtualBox (conceptual overview: https://www.youtube.com/watch?v=djnqoEO2rLc)
+        check for success installation by checking the version
+          $vagrant --version
+        more detailed about vagrant test: https://github.com/fwangboulder/Project_Tournament_Results
+    3. $ vagrant up
+       $ vagrant ssh
+    4. $ cd /vagrant
+       $ ls
+          view files you have.
+    5. $python project.py
 
-    4. $python project.py
+    5. Open your browser: http://localhost:9000
 
-    5. http://localhost:9000
 
-    6. If you see an error about JSON serializable. update your versions of Flask.
-
-      ```
-      $pip install werkzeug==0.8.3
-
-      $pip install flask==0.9
-
-      $pip install Flask-Login==0.1.3
-
-      Note: If you get a permissions error, you will need to include sudo at the beginning of each command. That should look like this: sudo pip install flask==0.9
-
-      ```
-    7. Before you login, you can only view all the university and graduates.
+    6. Before you login, you can only view all the university and graduates.
 
     8. After you login with your google account, you can play with create, edit and delete functions.
 
