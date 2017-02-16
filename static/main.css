@@ -19,6 +19,15 @@ a {
   color: blue;
   font-size: 1.5em;
 }
+.sign_in {
+  display: block;
+  border-radius: 25px;
+  border: 20px solid gray;
+  padding: 25px;
+  width: 250px;
+  margin-left:auto;
+  margin-right: auto;
+}
 
 .name {
   width: 50%;
