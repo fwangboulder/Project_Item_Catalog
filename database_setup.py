@@ -40,14 +40,13 @@ Base = declarative_base()
 # ---------------------------------
 class User(Base):
     __tablename__ = 'user'
-
-    id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    id = Column(Integer, primary_key=True)
     email = Column(String(250), nullable=False)
     picture = Column(String(250))
-
 # two classes corresponds to the two tables in our database.
 # University and Graduate.
+
 
 class University(Base):
     # representation of table inside the database.
@@ -58,6 +57,7 @@ class University(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
@@ -103,7 +103,7 @@ class Graduate(Base):
 
 # create an instance of our create_engine class and point to the database
 # use SQLite 3
-engine = create_engine('sqlite:///alumniwithusers.db')
+engine = create_engine('sqlite:///alumni.db')
 
 # goes into the database and adds the classes as new tables in our databases.
 Base.metadata.create_all(engine)
