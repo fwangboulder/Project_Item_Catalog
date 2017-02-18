@@ -24,7 +24,7 @@ Achievement:
 
     1. $ git clone https://github.com/fwangboulder/Project_Item_Catalog.git
 
-    2. $ cd Project_Item_catalog.git
+    2. $ cd Project_Item_catalog
         make sure you have installed Vagrant and VirtualBox (conceptual overview: https://www.youtube.com/watch?v=djnqoEO2rLc)
         check for success installation by checking the version
           $vagrant --version
