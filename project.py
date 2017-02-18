@@ -11,12 +11,15 @@
 
 #! /usr/bin/env python
 
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template
+from flask import request, redirect, jsonify, url_for, flash
 # code for SQLAlchemy and database engine in sessionmaker
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, University, Graduate, User
 ##############################
+#use Flask Login Decorator
+from functools import wraps
 #*****************************
 # New Imports for Authentication And Authorization
 from flask import session as login_session
@@ -71,7 +74,15 @@ def showLogin():
     # return 'The current session state is %s' %login_session['state']
     # after create the login.html in templates, now render it
     return render_template('login.html', STATE=state)
-
+#################################
+#declare login decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
 #################################
 
 
@@ -218,7 +229,8 @@ def gdisconnect():
     #response = make_response(json.dumps('Current user not connected.'), 401)
     #response.headers['Content-Type'] = 'application/json'
     # return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s'
+            % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     # print 'result is '
@@ -258,8 +270,8 @@ def fbconnect():
         'web']['app_id']
     app_secret = json.loads(
         open('fbclientsecrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' #NOQA
+     % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
@@ -268,7 +280,8 @@ def fbconnect():
     # strip expire tag from access token
     token = result.split("&")[0]
 
-    url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email'
+            % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     # print "url sent for API access:%s"% url
@@ -286,7 +299,8 @@ def fbconnect():
     login_session['access_token'] = stored_token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200'  #NOQA
+            % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -306,7 +320,9 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px; \
+    border-radius: 150px;-webkit-border-radius: 150px;  \
+    -moz-border-radius: 150px;"> '
 
     flash("Now logged in as %s" % login_session['username'])
     return output
@@ -317,8 +333,8 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
-        facebook_id, access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s'
+            % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -399,9 +415,11 @@ def showUniversity():
 
 
 @app.route('/university/new/', methods=['GET', 'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def newUniversity():
-    if 'username' not in login_session:
-        return redirect('/login')
+    #if 'username' not in login_session:
+    #    return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
             university = University(
@@ -418,9 +436,11 @@ def newUniversity():
 
 
 @app.route('/university/<int:university_id>/edit/', methods=['GET', 'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def editUniversity(university_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    # if 'username' not in login_session:
+    #     return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
     if university.user_id != login_session['user_id']:
         # return """<script> function myFunction()
@@ -428,7 +448,8 @@ def editUniversity(university_id):
         # </script>
         # <body onload='myFunction()'>
         # """
-        flash("You are not allowed to edit university created by others! Please create new university!")
+        flash("You are not allowed to edit university created by others! \
+        Please create new university!")
         return redirect(url_for('showUniversity'))
 
     if request.method == 'POST':
@@ -448,17 +469,21 @@ def editUniversity(university_id):
 
 
 @app.route('/university/<int:university_id>/delete/', methods=['GET', 'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def deleteUniversity(university_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    # if 'username' not in login_session:
+    #     return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
     if university.user_id != login_session['user_id']:
         # return """<script> function myFunction()
-        # {alert('Not allowed to delete this university. Please create your own for delete.');}
+        # {alert('Not allowed to delete this university.
+        #Please create your own for delete.');}
         # </script>
         # <body onload='myFunction()'>
         # """
-        flash("You are not allowed to delete university created by others! Please create new university!")
+        flash("You are not allowed to delete university created by others! \
+        Please create new university!")
         return redirect(url_for('showUniversity'))
     if request.method == 'POST':
         session.delete(university)
@@ -507,17 +532,21 @@ def showGraduate(university_id):
     methods=[
         'GET',
         'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def newGraduate(university_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    # if 'username' not in login_session:
+    #     return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
     if university.user_id != login_session['user_id']:
         # return """<script> function myFunction()
-        # {alert('Not allowed to add graduate to this university. Please create your university for add.');}
+        # {alert('Not allowed to add graduate to this university.
+        #Please create your university for add.');}
         # </script>
         # <body onload='myFunction()'>
         # """
-        flash("You are not allowed to add graduate to university created by others! Please create new university!")
+        flash("You are not allowed to add graduate to university \
+        created by others! Please create new university!")
         return redirect(url_for("showUniversity"))
     if request.method == 'POST':
         graduate = Graduate(
@@ -546,14 +575,17 @@ def newGraduate(university_id):
     methods=[
         'GET',
         'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def editGraduate(university_id, graduate_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    # if 'username' not in login_session:
+    #     return redirect('/login')
     graduate = session.query(Graduate).filter_by(id=graduate_id).one()
     university = session.query(University).filter_by(id=university_id).one()
     # if university.user_id!=login_session['user_id']:
     #     # return """<script> function myFunction()
-    #     # {alert('Not allowed to edit this graduate. Please create your own for edit.');}
+    #     # {alert('Not allowed to edit this graduate.
+    # Please create your own for edit.');}
     #     # </script>
     #     # <body onload='myFunction()'>
     #     # """
@@ -591,14 +623,17 @@ def editGraduate(university_id, graduate_id):
     methods=[
         'GET',
         'POST'])
+#used the decorator function, replace the login check code.
+@login_required
 def deleteGraduate(university_id, graduate_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    # if 'username' not in login_session:
+    #     return redirect('/login')
     university = session.query(University).filter_by(id=university_id).one()
     graduate = session.query(Graduate).filter_by(id=graduate_id).one()
     # if university.user_id!=login_session['user_id']:
     #     # return """<script> function myFunction()
-    #     # {alert('Not allowed to delete this graduate. Please create your own for edit.');}
+    #     # {alert('Not allowed to delete this graduate.
+    #Please create your own for edit.');}
     #     # </script>
     #     # <body onload='myFunction()'>
     #     # """
