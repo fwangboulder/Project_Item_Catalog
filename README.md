@@ -36,10 +36,10 @@ Achievement:
           view files you have.
     5. $python project.py
 
-    5. Open your browser: http://localhost:9000
+    6. Open your browser: http://localhost:9000
 
 
-    6. Before you login, you can only view all the university and graduates.
+    7. Before you login, you can only view all the university and graduates.
 
     8. After you login with your google account, you can play with create, edit and delete functions.
 
