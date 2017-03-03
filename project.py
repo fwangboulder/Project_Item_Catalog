@@ -110,7 +110,7 @@ def gconnect():
         return response
 
     # Check that the access token is valid.
-    access_token = credentials
+    access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
 
@@ -224,7 +224,7 @@ def gdisconnect():
         return response
     # Execute HTTP GET request to revoke current token.
     #access_token = login_session['access_token']
-    access_token = credentials
+    access_token = credentials.access_token
     # print 'In gdisconnect access token is %s', access_token
     # print 'User name is: '
     # print login_session['username']
@@ -235,7 +235,7 @@ def gdisconnect():
     # return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
-    result = h.request(url, 'GET')[0].decode("utf8")
+    result = h.request(url, 'GET')[0]
     # print 'result is '
     # print result
     # del login_session['credentials']
